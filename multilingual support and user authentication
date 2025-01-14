@@ -1,0 +1,65 @@
+import React, { useState } from "react";
+import { generateContent, registerUser, loginUser } from "./services/api";
+
+function App() {
+  const [prompt, setPrompt] = useState("");
+  const [response, setResponse] = useState("");
+  const [language, setLanguage] = useState("en");
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+
+  const handleGenerate = async () => {
+    const result = await generateContent(prompt, language);
+    setResponse(result.content || result.error);
+  };
+
+  const handleRegister = async () => {
+    const result = await registerUser(username, password);
+    alert(result.message || result.error);
+  };
+
+  const handleLogin = async () => {
+    const result = await loginUser(username, password);
+    alert(result.message || result.error);
+  };
+
+  return (
+    <div>
+      <h1>Kaevor AI</h1>
+      <div>
+        <h2>User Management</h2>
+        <input
+          type="text"
+          placeholder="Username"
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
+        />
+        <input
+          type="password"
+          placeholder="Password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+        />
+        <button onClick={handleRegister}>Register</button>
+        <button onClick={handleLogin}>Login</button>
+      </div>
+      <div>
+        <h2>Content Generation</h2>
+        <textarea
+          placeholder="Enter your prompt here..."
+          value={prompt}
+          onChange={(e) => setPrompt(e.target.value)}
+        />
+        <select value={language} onChange={(e) => setLanguage(e.target.value)}>
+          <option value="en">English</option>
+          <option value="zh">Chinese</option>
+          <option value="es">Spanish</option>
+        </select>
+        <button onClick={handleGenerate}>Generate</button>
+      </div>
+      {response && <p>{response}</p>}
+    </div>
+  );
+}
+
+export default App;
